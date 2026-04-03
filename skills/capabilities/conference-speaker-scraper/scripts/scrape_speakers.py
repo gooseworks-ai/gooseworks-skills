@@ -26,11 +26,16 @@ except ImportError:
     print("ERROR: 'requests' package required. Install with: pip3 install requests", file=sys.stderr)
     sys.exit(1)
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
+
 HEADERS = {
     "User-Agent": "ConferenceSpeakerScraper/1.0"
 }
 
-APIFY_BASE = "https://api.apify.com/v2"
+APIFY_BASE = _apify_cfg["base_url"]
 
 # Speaker-related CSS class patterns
 SPEAKER_CLASS_PATTERNS = [
@@ -257,7 +262,7 @@ def scrape_direct(url, conference_name):
 
 def get_apify_token(token_arg=None):
     """Get Apify API token."""
-    token = token_arg or os.environ.get("APIFY_API_TOKEN")
+    token = token_arg or _apify_cfg["token"]
     if not token:
         print("ERROR: Apify mode requires APIFY_API_TOKEN. Set it or use --token.", file=sys.stderr)
         sys.exit(1)

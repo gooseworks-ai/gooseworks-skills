@@ -54,6 +54,10 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from apollo_client import ApolloClient
 
+# Import GooseWorks routing
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import is_gooseworks
+
 # Import shared supabase client from tools/supabase/
 SUPABASE_TOOLS = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -153,7 +157,9 @@ def load_env():
             break
 
     # Validate required keys
-    required_keys = ["APOLLO_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
+    required_keys = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
+    if not is_gooseworks():
+        required_keys.append("APOLLO_API_KEY")
     missing = [k for k in required_keys if not env.get(k)]
     if missing:
         print(f"ERROR: Missing environment variables: {missing}")
@@ -330,7 +336,7 @@ def run_search(config, env, mode, dry_run=False, auto_confirm=False, preview_onl
 
     Collects Apollo person IDs + preview data and saves as manifest.
     """
-    apollo = ApolloClient(env["APOLLO_API_KEY"])
+    apollo = ApolloClient(env.get("APOLLO_API_KEY"))
     client_name = config["client_name"]
     max_pages = min(config["max_pages"], mode["max_pages"])
     filters = config["apollo_filters"]
@@ -560,7 +566,7 @@ def run_enrich(config, env, mode, auto_confirm=False, dry_run=False, limit_overr
     Reads search manifest, bulk-enriches by Apollo ID, deduplicates
     against Supabase, and upserts net-new leads.
     """
-    apollo = ApolloClient(env["APOLLO_API_KEY"])
+    apollo = ApolloClient(env.get("APOLLO_API_KEY"))
     client_name = config["client_name"]
     max_enrich = limit_override or mode["max_enrich"]
 

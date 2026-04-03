@@ -10,12 +10,18 @@ Two approaches for Luma:
    with LinkedIn, Twitter, bio, etc). Requires APIFY_API_TOKEN. $29/month flat.
 """
 import os
+import sys
 import re
 import json
 import requests
 import time
 from typing import Dict, List, Optional
 from urllib.parse import urlparse
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
 
 
 def _normalize_linkedin(handle: str) -> str:
@@ -145,10 +151,10 @@ class LumaApifyClient:
     """
 
     ACTOR_ID = "lexis-solutions~lu-ma-scraper"
-    BASE_URL = "https://api.apify.com/v2"
+    BASE_URL = _apify_cfg["base_url"]
 
     def __init__(self, api_token: Optional[str] = None):
-        self.api_token = api_token or os.getenv("APIFY_API_TOKEN")
+        self.api_token = api_token or _apify_cfg["token"]
         if not self.api_token:
             raise ValueError(
                 "APIFY_API_TOKEN not set. Get one at: https://console.apify.com/account/integrations"

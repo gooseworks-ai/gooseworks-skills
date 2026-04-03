@@ -44,9 +44,15 @@ SUPABASE_TOOLS = os.path.join(
 sys.path.insert(0, os.path.abspath(SUPABASE_TOOLS))
 from supabase_client import SupabaseClient
 
+# Import GooseWorks routing
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import crustdata_config, is_gooseworks
+
+_crustdata_cfg = crustdata_config()
+
 # ── Constants ────────────────────────────────────────────────────
 
-CRUSTDATA_SEARCH_URL = "https://api.crustdata.com/screener/person/search/"
+CRUSTDATA_SEARCH_URL = f"{_crustdata_cfg['base_url']}/screener/person/search/"
 RESULTS_PER_PAGE = 25        # CrustData sync results per page
 MAX_PAGE = 100               # CrustData max page number
 RATE_LIMIT_DELAY = 4.0       # 15 req/min = 4s between requests
@@ -132,7 +138,9 @@ def load_env():
             break
 
     # Validate required keys
-    required_keys = ["CRUSTDATA_API_TOKEN", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
+    required_keys = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
+    if not is_gooseworks():
+        required_keys.append("CRUSTDATA_API_TOKEN")
     missing = [k for k in required_keys if not env.get(k)]
     if missing:
         print(f"ERROR: Missing environment variables: {missing}")
@@ -214,7 +222,7 @@ def check_payload_size(payload):
     return payload, True
 
 
-def crustdata_request(payload, token, retries=MAX_RETRIES):
+def crustdata_request(payload, token=None, retries=MAX_RETRIES):
     """Make a POST request to CrustData People Search.
 
     Handles rate limiting (429) with retry-after and server errors
@@ -224,11 +232,10 @@ def crustdata_request(payload, token, retries=MAX_RETRIES):
         Parsed JSON response dict.
     """
     body = json.dumps(payload).encode("utf-8")
-    headers = {
-        "Authorization": f"Token {token}",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
+    headers = dict(_crustdata_cfg["headers"])
+    if token and not is_gooseworks():
+        headers["Authorization"] = f"Token {token}"
+    headers["Accept"] = "application/json"
     req = urllib.request.Request(CRUSTDATA_SEARCH_URL, data=body, headers=headers, method="POST")
 
     for attempt in range(retries):
@@ -269,7 +276,7 @@ def crustdata_request(payload, token, retries=MAX_RETRIES):
     sys.exit(1)
 
 
-def preview_search(config, token):
+def preview_search(config, token=None):
     """Run with preview=true to see total count without fetching profiles.
 
     Costs 5 credits.
@@ -503,7 +510,7 @@ def run_pipeline(config, env, test_mode=False, dry_run=False, auto_confirm=False
     Returns:
         Dict with summary stats.
     """
-    token = env["CRUSTDATA_API_TOKEN"]
+    token = env.get("CRUSTDATA_API_TOKEN")
     client_name = config["client_name"]
 
     # Determine mode caps
@@ -779,7 +786,7 @@ def main():
         print(f"    {i}. {ftype} {fdir}: {display}")
 
     if args.preview:
-        preview_search(config, env["CRUSTDATA_API_TOKEN"])
+        preview_search(config, env.get("CRUSTDATA_API_TOKEN"))
         return
 
     run_pipeline(

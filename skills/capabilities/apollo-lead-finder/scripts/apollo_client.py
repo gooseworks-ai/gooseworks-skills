@@ -17,30 +17,44 @@ Usage:
 """
 
 import json
+import os
 import time
 import urllib.request
 import urllib.parse
 import urllib.error
 
-BASE_URL = "https://api.apollo.io/api/v1"
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apollo_config, is_gooseworks
+
+_apollo_cfg = apollo_config()
+
+BASE_URL = _apollo_cfg["base_url"]
 MAX_RETRIES = 3
 
 
 class ApolloClient:
     """Thin REST client for the Apollo.io API."""
 
-    def __init__(self, api_key):
+    def __init__(self, api_key=None):
         """
         Args:
             api_key: APOLLO_API_KEY from Apollo settings.
+                     Optional when running under GooseWorks (key is managed server-side).
         """
-        self.api_key = api_key
-        self.headers = {
-            "x-api-key": api_key,
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "Mozilla/5.0 (compatible; ApolloClient/1.0)",
-        }
+        if is_gooseworks():
+            self.api_key = ""
+            self.headers = dict(_apollo_cfg["headers"])
+            self.headers["Accept"] = "application/json"
+            self.headers["User-Agent"] = "Mozilla/5.0 (compatible; ApolloClient/1.0)"
+        else:
+            self.api_key = api_key
+            self.headers = {
+                "x-api-key": api_key,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "User-Agent": "Mozilla/5.0 (compatible; ApolloClient/1.0)",
+            }
 
     def _request(self, method, path, data=None, retries=MAX_RETRIES):
         """Generic HTTP request to Apollo API with retry logic.
@@ -65,7 +79,8 @@ class ApolloClient:
         # Include api_key in body for POST requests (Apollo's primary auth method)
         if data is not None and method == "POST":
             data = dict(data)
-            data["api_key"] = self.api_key
+            if self.api_key:
+                data["api_key"] = self.api_key
         body = json.dumps(data).encode("utf-8") if data is not None else None
         req = urllib.request.Request(url, data=body, headers=self.headers, method=method)
 
@@ -248,10 +263,9 @@ class ApolloClient:
             print("  enrich_organization: no domain or name provided")
             return None
 
-        payload = {
-            "domain": domain,
-            "api_key": self.api_key,
-        }
+        payload = {"domain": domain}
+        if self.api_key:
+            payload["api_key"] = self.api_key
         params = urllib.parse.urlencode(payload)
         return self._request("GET", f"/organizations/enrich?{params}")
 

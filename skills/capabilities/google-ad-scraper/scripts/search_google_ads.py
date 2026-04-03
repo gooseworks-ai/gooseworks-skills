@@ -18,9 +18,13 @@ import time as time_mod
 import re
 from urllib.parse import quote
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
 
 ACTOR_ID = "xtech~google-ad-transparency-scraper"
-BASE_URL = "https://api.apify.com/v2"
+BASE_URL = _apify_cfg["base_url"]
 
 # Google Ads Transparency Center base URL
 GADS_BASE = "https://adstransparency.google.com"
@@ -28,7 +32,7 @@ GADS_BASE = "https://adstransparency.google.com"
 
 def get_token(cli_token=None):
     """Get Apify API token from CLI arg or APIFY_API_TOKEN env var."""
-    token = cli_token or os.environ.get("APIFY_API_TOKEN")
+    token = cli_token or _apify_cfg["token"]
     if not token:
         print("Error: Apify token required. Use --token or set APIFY_API_TOKEN env var.", file=sys.stderr)
         sys.exit(1)

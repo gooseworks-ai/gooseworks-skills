@@ -41,6 +41,12 @@ except ImportError:
 
 import csv
 
+# ── GooseWorks API routing ────────────────────────────────────────────────────
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
+
 
 # ---------------------------------------------------------------------------
 # Config
@@ -52,7 +58,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 SESSIONIZE_BASE = "https://sessionize.com/api/v2"
 CONFSTECH_BASE = "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences"
 LISTENNOTES_BASE = "https://listen-api.listennotes.com/api/v2"
-APIFY_BASE = "https://api.apify.com/v2"
+APIFY_BASE = _apify_cfg["base_url"]
 APIFY_MEETUP_ACTOR = "qaDijpjO2HlVfLvoE"  # automation-lab/meetup-scraper
 APIFY_LUMA_ACTOR = "r5gMxLV2rOF3J1fxu"  # lexis-solutions/lu-ma-scraper
 
@@ -75,6 +81,8 @@ SIGNAL_TYPES = {
 
 
 def load_apify_key():
+    if _apify_cfg["token"]:
+        return _apify_cfg["token"]
     if load_dotenv:
         for env_path in [
             PROJECT_ROOT / ".env",
