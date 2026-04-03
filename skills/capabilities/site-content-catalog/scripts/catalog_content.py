@@ -19,6 +19,11 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
+
 try:
     import requests
 except ImportError:
@@ -26,7 +31,7 @@ except ImportError:
     sys.exit(1)
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ContentCatalogBot/1.0)"}
-APIFY_BASE = "https://api.apify.com/v2"
+APIFY_BASE = _apify_cfg["base_url"]
 SITEMAP_ACTOR = "onescales~sitemap-url-extractor"
 
 # --- Content Type Classification ---
@@ -657,7 +662,7 @@ def main():
     # Strip protocol if provided
     domain = args.domain.replace("https://", "").replace("http://", "").rstrip("/")
 
-    apify_token = args.apify_token or os.environ.get("APIFY_API_TOKEN")
+    apify_token = args.apify_token or _apify_cfg["token"]
 
     result = catalog_domain(
         domain=domain,

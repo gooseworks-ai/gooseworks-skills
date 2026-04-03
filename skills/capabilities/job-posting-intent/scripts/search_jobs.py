@@ -32,9 +32,13 @@ except ImportError:
     print("ERROR: 'requests' package required. Install with: pip3 install requests")
     sys.exit(1)
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
 
 ACTOR_ID = "harvestapi~linkedin-job-search"
-BASE_URL = "https://api.apify.com/v2"
+BASE_URL = _apify_cfg["base_url"]
 
 # Pricing constants
 COST_PER_JOB = 0.001      # $0.001 per job result
@@ -48,7 +52,7 @@ _mcp_session_id = None
 
 
 def get_token() -> str:
-    token = os.getenv("APIFY_API_TOKEN")
+    token = _apify_cfg["token"]
     if not token:
         print("ERROR: APIFY_API_TOKEN not set.")
         print("Get one at: https://console.apify.com/account/integrations")

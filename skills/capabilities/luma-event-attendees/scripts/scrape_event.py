@@ -28,6 +28,11 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Optional
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
+
 # Add scripts dir to path
 script_dir = Path(__file__).parent
 sys.path.insert(0, str(script_dir))
@@ -306,7 +311,7 @@ Environment:
 
         # Apify search mode
         if args.search:
-            if not os.getenv("APIFY_API_TOKEN"):
+            if not _apify_cfg["token"]:
                 print("Error: APIFY_API_TOKEN required for --search mode")
                 print("Get token: https://console.apify.com/account/integrations")
                 print("Rent actor: https://console.apify.com/actors/r5gMxLV2rOF3J1fxu")

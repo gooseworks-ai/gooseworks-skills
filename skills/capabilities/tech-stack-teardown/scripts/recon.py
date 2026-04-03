@@ -23,6 +23,11 @@ import time
 import urllib.request
 from datetime import datetime, timezone
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
+
 # ── Config ──────────────────────────────────────────────────────────────────
 
 DKIM_SELECTORS = [
@@ -310,7 +315,7 @@ def scan_apify_profiler(domains, token):
     try:
         import requests
         resp = requests.post(
-            "https://api.apify.com/v2/acts/justa~technology-profiling-engine/runs",
+            f"{_apify_cfg['base_url']}/acts/justa~technology-profiling-engine/runs",
             json=payload,
             params={"token": token, "waitForFinish": 300},
             timeout=330,
@@ -327,7 +332,7 @@ def scan_apify_profiler(domains, token):
             for _ in range(60):
                 time.sleep(5)
                 check = requests.get(
-                    f"https://api.apify.com/v2/actor-runs/{run_id}",
+                    f"{_apify_cfg['base_url']}/actor-runs/{run_id}",
                     params={"token": token},
                 ).json()
                 status = check["data"]["status"]
@@ -340,7 +345,7 @@ def scan_apify_profiler(domains, token):
 
         dataset_id = run_data["defaultDatasetId"]
         ds_resp = requests.get(
-            f"https://api.apify.com/v2/datasets/{dataset_id}/items",
+            f"{_apify_cfg['base_url']}/datasets/{dataset_id}/items",
             params={"token": token},
         )
         items = ds_resp.json()
@@ -531,15 +536,7 @@ def main():
     # Get Apify token
     apify_token = None
     if not args.no_apify:
-        apify_token = os.environ.get("APIFY_API_TOKEN")
-        if not apify_token:
-            try:
-                from dotenv import load_dotenv
-                env_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", ".env")
-                load_dotenv(env_path)
-                apify_token = os.environ.get("APIFY_API_TOKEN")
-            except ImportError:
-                pass
+        apify_token = _apify_cfg["token"]
         if not apify_token:
             print("  Warning: APIFY_API_TOKEN not found. Skipping Apify profiler.")
             print("  Set it in .env or pass --no-apify for free-only mode.")

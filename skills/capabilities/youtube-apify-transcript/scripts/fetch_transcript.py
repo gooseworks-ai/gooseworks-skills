@@ -32,15 +32,19 @@ except ImportError:
     print("Install with: pip install requests", file=sys.stderr)
     sys.exit(1)
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
+from lib.gooseworks import apify_config
+
+_apify_cfg = apify_config()
 
 APIFY_ACTOR_ID = "karamelo~youtube-transcripts"
-APIFY_API_BASE = "https://api.apify.com/v2"
+APIFY_API_BASE = _apify_cfg["base_url"]
 CACHE_DIR = Path(os.environ.get("YT_TRANSCRIPT_CACHE_DIR", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".cache")))
 
 
 def get_api_token():
     """Get APIFY API token from environment."""
-    token = os.environ.get("APIFY_API_TOKEN")
+    token = _apify_cfg["token"]
     if not token:
         print("Error: APIFY_API_TOKEN environment variable not set.", file=sys.stderr)
         print("\nSetup instructions:", file=sys.stderr)
