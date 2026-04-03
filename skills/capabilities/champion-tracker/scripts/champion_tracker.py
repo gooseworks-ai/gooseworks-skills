@@ -54,12 +54,6 @@ def _load_dotenv():
 
 _load_dotenv()
 
-# --- GooseWorks API routing ---
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
-
 # --- Import Apify Guard (shared cost protection) ---
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent))
 try:
@@ -103,7 +97,7 @@ else:
         sys.exit(1)
 
     _ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
-    _BASE_URL = _apify_cfg["base_url"]
+    _BASE_URL = "https://api.apify.com/v2"
     _COST_PER_1K = 3.00
 
     def normalize_linkedin_url(url: str) -> str:
@@ -603,7 +597,7 @@ def cmd_init(args):
         return
 
     # Check API token
-    api_token = _apify_cfg["token"] or os.getenv("APIFY_API_TOKEN")
+    api_token = os.getenv("APIFY_API_TOKEN")
     if not api_token:
         print("Error: APIFY_API_TOKEN not set")
         print("Get token: https://console.apify.com/account/integrations")
@@ -734,7 +728,7 @@ def cmd_check(args):
         return
 
     # Check API token
-    api_token = _apify_cfg["token"] or os.getenv("APIFY_API_TOKEN")
+    api_token = os.getenv("APIFY_API_TOKEN")
     if not api_token:
         print("Error: APIFY_API_TOKEN not set")
         sys.exit(1)

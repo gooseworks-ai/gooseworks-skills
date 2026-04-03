@@ -32,11 +32,6 @@ import time
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
-
 try:
     import requests
 except ImportError:
@@ -45,7 +40,7 @@ except ImportError:
 
 # --- Constants ---
 ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
-BASE_URL = _apify_cfg["base_url"]
+BASE_URL = "https://api.apify.com/v2"
 COST_PER_1K = 3.00  # $3 per 1,000 profiles
 ACTOR_URL = "https://console.apify.com/actors/supreme_coder~linkedin-profile-scraper"
 
@@ -472,7 +467,7 @@ Environment:
         sys.exit(0)
 
     # Check API token
-    api_token = _apify_cfg["token"] or os.getenv("APIFY_API_TOKEN")
+    api_token = os.getenv("APIFY_API_TOKEN")
     if not api_token:
         print("Error: APIFY_API_TOKEN not set")
         print("Get token: https://console.apify.com/account/integrations")

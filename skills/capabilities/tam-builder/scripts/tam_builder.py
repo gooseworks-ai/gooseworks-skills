@@ -35,10 +35,6 @@ import argparse
 import time
 from datetime import datetime, timezone
 
-# Import GooseWorks routing
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import is_gooseworks
-
 # Import apollo client from the apollo-lead-finder skill
 APOLLO_SCRIPTS = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -127,9 +123,7 @@ def load_env():
                         env[k.strip()] = v.strip().strip('"').strip("'")
             break
 
-    required_keys = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
-    if not is_gooseworks():
-        required_keys.append("APOLLO_API_KEY")
+    required_keys = ["APOLLO_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
     missing = [k for k in required_keys if not env.get(k)]
     if missing:
         print(f"ERROR: Missing environment variables: {missing}")
@@ -1157,7 +1151,7 @@ def build_tam(config, env, caps=None, dry_run=False, auto_confirm=False,
     if caps is None:
         caps = MODE_CAPS["standard"]
 
-    apollo = ApolloClient(env.get("APOLLO_API_KEY"))
+    apollo = ApolloClient(env["APOLLO_API_KEY"])
     sb = SupabaseClient(env["SUPABASE_URL"], env["SUPABASE_SERVICE_ROLE_KEY"])
 
     # Pre-flight schema check — abort early if required columns are missing
@@ -1581,7 +1575,7 @@ def refresh_tam(config, env, caps=None, dry_run=False, auto_confirm=False,
     if caps is None:
         caps = MODE_CAPS["standard"]
 
-    apollo = ApolloClient(env.get("APOLLO_API_KEY"))
+    apollo = ApolloClient(env["APOLLO_API_KEY"])
     sb = SupabaseClient(env["SUPABASE_URL"], env["SUPABASE_SERVICE_ROLE_KEY"])
     client_name = config["client_name"]
     filters = config["company_filters"]

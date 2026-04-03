@@ -16,11 +16,6 @@ import sys
 import argparse
 import time as time_mod
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
-
 try:
     import requests
 except ImportError:
@@ -29,11 +24,11 @@ except ImportError:
 
 
 ACTOR_ID = "powerai~influencer-filter-api-scraper"
-BASE_URL = _apify_cfg["base_url"]
+BASE_URL = "https://api.apify.com/v2"
 
 
 def get_token(cli_token=None):
-    token = cli_token or _apify_cfg["token"]
+    token = cli_token or os.environ.get("APIFY_API_TOKEN")
     if not token:
         print("Error: Apify token required. Use --token or set APIFY_API_TOKEN env var.", file=sys.stderr)
         sys.exit(1)
