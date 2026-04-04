@@ -44,15 +44,13 @@ SUPABASE_TOOLS = os.path.join(
 sys.path.insert(0, os.path.abspath(SUPABASE_TOOLS))
 from supabase_client import SupabaseClient
 
-# Import GooseWorks routing
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import crustdata_config, is_gooseworks
-
-_crustdata_cfg = crustdata_config()
+# GooseWorks API routing
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 # ── Constants ────────────────────────────────────────────────────
 
-CRUSTDATA_SEARCH_URL = f"{_crustdata_cfg['base_url']}/screener/person/search/"
+CRUSTDATA_SEARCH_URL = f"{GOOSEWORKS_API_BASE}/proxy/crustdata/screener/person/search/"
 RESULTS_PER_PAGE = 25        # CrustData sync results per page
 MAX_PAGE = 100               # CrustData max page number
 RATE_LIMIT_DELAY = 4.0       # 15 req/min = 4s between requests
@@ -139,7 +137,7 @@ def load_env():
 
     # Validate required keys
     required_keys = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
-    if not is_gooseworks():
+    if not bool(os.environ.get("GOOSEWORKS_API_KEY")):
         required_keys.append("CRUSTDATA_API_TOKEN")
     missing = [k for k in required_keys if not env.get(k)]
     if missing:
@@ -232,9 +230,7 @@ def crustdata_request(payload, token=None, retries=MAX_RETRIES):
         Parsed JSON response dict.
     """
     body = json.dumps(payload).encode("utf-8")
-    headers = dict(_crustdata_cfg["headers"])
-    if token and not is_gooseworks():
-        headers["Authorization"] = f"Token {token}"
+    headers = {"Authorization": f"Bearer {GOOSEWORKS_API_KEY}", "Content-Type": "application/json"}
     headers["Accept"] = "application/json"
     req = urllib.request.Request(CRUSTDATA_SEARCH_URL, data=body, headers=headers, method="POST")
 

@@ -30,10 +30,8 @@ from pathlib import Path
 _project_root = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(_project_root))
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 from tools.supabase.supabase_client import SupabaseClient
 from tools.apify_guard import (
@@ -323,7 +321,7 @@ def scan_job_postings(sb, companies, config, client_name, run_id, apify_token):
         try:
             actor_run_id = guarded_apify_run(APIFY_ACTOR_JOB_SEARCH, payload, apify_token)
             # Fetch dataset from run
-            check_url = f"{_apify_cfg['base_url']}/actor-runs/{actor_run_id}?token={apify_token}"
+            check_url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{actor_run_id}?token={apify_token}"
             check = json.load(urllib.request.urlopen(check_url, timeout=30))
             dataset_id = check["data"]["defaultDatasetId"]
             jobs = fetch_dataset(dataset_id, apify_token)
@@ -405,7 +403,7 @@ def scan_linkedin_content(sb, people, config, client_name, run_id, apify_token):
 
         try:
             actor_run_id = guarded_apify_run(APIFY_ACTOR_PROFILE_POSTS, payload, apify_token)
-            check_url = f"{_apify_cfg['base_url']}/actor-runs/{actor_run_id}?token={apify_token}"
+            check_url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{actor_run_id}?token={apify_token}"
             check = json.load(urllib.request.urlopen(check_url, timeout=30))
             dataset_id = check["data"]["defaultDatasetId"]
             posts = fetch_dataset(dataset_id, apify_token)
@@ -558,7 +556,7 @@ def scan_profile_changes(sb, people, config, client_name, run_id, apify_token):
 
         try:
             actor_run_id = guarded_apify_run(APIFY_ACTOR_PROFILE_SCRAPER, payload, apify_token)
-            check_url = f"{_apify_cfg['base_url']}/actor-runs/{actor_run_id}?token={apify_token}"
+            check_url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{actor_run_id}?token={apify_token}"
             check = json.load(urllib.request.urlopen(check_url, timeout=30))
             dataset_id = check["data"]["defaultDatasetId"]
             profiles = fetch_dataset(dataset_id, apify_token)
@@ -785,7 +783,7 @@ def run_scan(sb, config, run_id, auto_confirm=False, test_mode=False, dry_run=Fa
     lead_statuses = scope.get("person_lead_statuses", ["monitoring", "signal_detected", "qualified"])
 
     # Get Apify token
-    apify_token = _apify_cfg["token"] or os.environ.get(config.get("apify_token_env", "APIFY_TOKEN"), "")
+    apify_token = GOOSEWORKS_API_KEY or os.environ.get(config.get("apify_token_env", "APIFY_TOKEN"), "")
 
     if auto_confirm:
         set_auto_confirm(True)

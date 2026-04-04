@@ -18,10 +18,8 @@ import time
 from typing import Dict, List, Optional
 from urllib.parse import urlparse
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 
 def _normalize_linkedin(handle: str) -> str:
@@ -151,10 +149,10 @@ class LumaApifyClient:
     """
 
     ACTOR_ID = "lexis-solutions~lu-ma-scraper"
-    BASE_URL = _apify_cfg["base_url"]
+    BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
 
     def __init__(self, api_token: Optional[str] = None):
-        self.api_token = api_token or _apify_cfg["token"]
+        self.api_token = api_token or GOOSEWORKS_API_KEY
         if not self.api_token:
             raise ValueError(
                 "APIFY_API_TOKEN not set. Get one at: https://console.apify.com/account/integrations"

@@ -38,10 +38,8 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 
 # ── GooseWorks API Routing ────────────────────────────────────────────────
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 # ── Apify Guard (shared cost protection) ────────────────────────────────────
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
@@ -135,7 +133,7 @@ def load_env():
 
 def apify_dataset(run_id, token, limit=50000):
     """Fetch dataset items from a completed run."""
-    url = f"{_apify_cfg['base_url']}/actor-runs/{run_id}/dataset/items?token={token}&limit={limit}"
+    url = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2/actor-runs/{run_id}/dataset/items?token={token}&limit={limit}"
     return json.load(urllib.request.urlopen(url, timeout=120))
 
 
@@ -740,7 +738,7 @@ def main():
     extra_companies = [u.strip() for u in args.companies.split(",") if u.strip()] if args.companies else []
 
     env = load_env()
-    token = _apify_cfg["token"] or env.get("APIFY_API_TOKEN", "")
+    token = GOOSEWORKS_API_KEY or env.get("APIFY_API_TOKEN", "")
     if not token:
         print("ERROR: APIFY_API_TOKEN not found in .env")
         sys.exit(1)

@@ -23,12 +23,10 @@ except ImportError:
     print("ERROR: 'requests' package required. Install with: pip3 install requests", file=sys.stderr)
     sys.exit(1)
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
-_apify_cfg = apify_config()
-
-APIFY_BASE = _apify_cfg["base_url"]
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
 ACTOR_ID = "harvestapi~linkedin-post-comments"
 
 HEADERS = {
@@ -42,7 +40,7 @@ HEADERS = {
 
 def get_apify_token(token_arg=None):
     """Get Apify API token from arg or environment."""
-    token = token_arg or _apify_cfg["token"]
+    token = token_arg or GOOSEWORKS_API_KEY
     if not token:
         print("ERROR: APIFY_API_TOKEN required. Set env var or use --token.", file=sys.stderr)
         sys.exit(1)

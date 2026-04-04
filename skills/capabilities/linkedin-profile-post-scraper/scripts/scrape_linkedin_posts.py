@@ -16,18 +16,16 @@ import requests
 import time as time_mod
 from datetime import datetime, timedelta, timezone
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 ACTOR_ID = "harvestapi~linkedin-profile-posts"
-BASE_URL = _apify_cfg["base_url"]
+BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
 
 
 def get_token(cli_token=None):
     """Get Apify API token from CLI arg or APIFY_API_TOKEN env var."""
-    token = cli_token or _apify_cfg["token"]
+    token = cli_token or GOOSEWORKS_API_KEY
     if not token:
         print("Error: Apify token required. Use --token or set APIFY_API_TOKEN env var.", file=sys.stderr)
         sys.exit(1)

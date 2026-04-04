@@ -23,13 +23,10 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apollo_config, is_gooseworks
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
-_apollo_cfg = apollo_config()
-
-BASE_URL = _apollo_cfg["base_url"]
+BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apollo/v1"
 MAX_RETRIES = 3
 
 
@@ -42,19 +39,13 @@ class ApolloClient:
             api_key: APOLLO_API_KEY from Apollo settings.
                      Optional when running under GooseWorks (key is managed server-side).
         """
-        if is_gooseworks():
-            self.api_key = ""
-            self.headers = dict(_apollo_cfg["headers"])
-            self.headers["Accept"] = "application/json"
-            self.headers["User-Agent"] = "Mozilla/5.0 (compatible; ApolloClient/1.0)"
-        else:
-            self.api_key = api_key
-            self.headers = {
-                "x-api-key": api_key,
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "User-Agent": "Mozilla/5.0 (compatible; ApolloClient/1.0)",
-            }
+        self.api_key = api_key or ""
+        self.headers = {
+            "Authorization": f"Bearer {GOOSEWORKS_API_KEY}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (compatible; ApolloClient/1.0)",
+        }
 
     def _request(self, method, path, data=None, retries=MAX_RETRIES):
         """Generic HTTP request to Apollo API with retry logic.

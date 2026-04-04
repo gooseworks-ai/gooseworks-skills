@@ -54,9 +54,6 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from apollo_client import ApolloClient
 
-# Import GooseWorks routing
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import is_gooseworks
 
 # Import shared supabase client from tools/supabase/
 SUPABASE_TOOLS = os.path.join(
@@ -158,7 +155,7 @@ def load_env():
 
     # Validate required keys
     required_keys = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
-    if not is_gooseworks():
+    if not bool(os.environ.get("GOOSEWORKS_API_KEY")):
         required_keys.append("APOLLO_API_KEY")
     missing = [k for k in required_keys if not env.get(k)]
     if missing:

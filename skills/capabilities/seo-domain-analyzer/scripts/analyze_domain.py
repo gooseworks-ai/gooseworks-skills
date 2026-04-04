@@ -16,10 +16,8 @@ import argparse
 import time as time_mod
 from datetime import datetime, timezone
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 try:
     import requests
@@ -27,7 +25,7 @@ except ImportError:
     print("Error: requests library required. Install with: pip install requests", file=sys.stderr)
     sys.exit(1)
 
-APIFY_BASE = _apify_cfg["base_url"]
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; SEOAnalyzerBot/1.0)"}
 
 # Apify actor IDs
@@ -485,7 +483,7 @@ def main():
     domain = args.domain.replace("https://", "").replace("http://", "").rstrip("/")
     competitors = [c.strip() for c in args.competitors.split(",") if c.strip()] if args.competitors else None
     keywords = [k.strip() for k in args.keywords.split(",") if k.strip()] if args.keywords else None
-    token = args.apify_token or _apify_cfg["token"]
+    token = args.apify_token or GOOSEWORKS_API_KEY
 
     result = analyze_domain(
         domain=domain,

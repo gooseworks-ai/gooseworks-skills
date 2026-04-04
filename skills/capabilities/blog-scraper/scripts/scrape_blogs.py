@@ -19,10 +19,8 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 # Common RSS feed paths to try
 FEED_PATHS = [
@@ -39,7 +37,7 @@ FEED_PATHS = [
 ]
 
 APIFY_ACTOR = "jupri~rss-xml-scraper"
-APIFY_BASE = _apify_cfg["base_url"]
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
 
 
 def discover_feed_url(blog_url):
@@ -381,7 +379,7 @@ Examples:
             print(f"[WARN] No feed found for: {', '.join(failed)}", file=sys.stderr)
 
     elif args.mode == "apify":
-        token = args.token or _apify_cfg["token"]
+        token = args.token or GOOSEWORKS_API_KEY
         if not token:
             print("Error: Apify token required for apify mode. Use --token or set APIFY_API_TOKEN.", file=sys.stderr)
             sys.exit(1)
@@ -390,7 +388,7 @@ Examples:
     else:  # auto mode
         posts, failed = scrape_rss(blog_urls, days=args.days, max_posts=args.max_posts)
         if failed:
-            token = args.token or _apify_cfg["token"]
+            token = args.token or GOOSEWORKS_API_KEY
             if token:
                 print(f"Falling back to Apify for: {', '.join(failed)}", file=sys.stderr)
                 apify_posts = scrape_apify(token, failed, max_posts=args.max_posts, timeout=args.timeout)

@@ -27,12 +27,10 @@ except ImportError:
     print("ERROR: 'requests' package required. Install with: pip3 install requests", file=sys.stderr)
     sys.exit(1)
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import crustdata_config, is_gooseworks
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
-_crustdata_cfg = crustdata_config()
-
-API_BASE = _crustdata_cfg["base_url"]
+API_BASE = f"{GOOSEWORKS_API_BASE}/proxy/crustdata"
 KEYWORD_SEARCH_ENDPOINT = "/screener/linkedin_posts/keyword_search"
 
 VALID_TIME_FRAMES = ["past-day", "past-week", "past-month", "past-quarter", "past-year", "all-time"]
@@ -41,7 +39,7 @@ VALID_SORT_BY = ["relevance", "date"]
 
 def get_token():
     token = os.environ.get("CRUSTDATA_API_TOKEN", "") or os.environ.get("CRUSTDATA_API_KEY", "")
-    if not token and not is_gooseworks():
+    if not token and not bool(os.environ.get("GOOSEWORKS_API_KEY")):
         print("ERROR: CRUSTDATA_API_TOKEN or CRUSTDATA_API_KEY environment variable not set.", file=sys.stderr)
         sys.exit(1)
     return token
@@ -50,9 +48,7 @@ def get_token():
 def search_keyword(token, keyword, time_frame, sort_by, page, limit):
     """Search LinkedIn posts for a single keyword on a single page via POST."""
     url = f"{API_BASE}{KEYWORD_SEARCH_ENDPOINT}"
-    headers = dict(_crustdata_cfg["headers"])
-    if token and not is_gooseworks():
-        headers["Authorization"] = f"Token {token}"
+    headers = {"Authorization": f"Bearer {GOOSEWORKS_API_KEY}", "Content-Type": "application/json"}
     headers["Accept"] = "application/json"
     payload = {
         "keyword": keyword,

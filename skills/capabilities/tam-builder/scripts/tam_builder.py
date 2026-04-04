@@ -35,9 +35,6 @@ import argparse
 import time
 from datetime import datetime, timezone
 
-# Import GooseWorks routing
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import is_gooseworks
 
 # Import apollo client from the apollo-lead-finder skill
 APOLLO_SCRIPTS = os.path.join(
@@ -128,7 +125,7 @@ def load_env():
             break
 
     required_keys = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
-    if not is_gooseworks():
+    if not bool(os.environ.get("GOOSEWORKS_API_KEY")):
         required_keys.append("APOLLO_API_KEY")
     missing = [k for k in required_keys if not env.get(k)]
     if missing:

@@ -39,10 +39,8 @@ except ImportError:
 import csv
 
 # ── GooseWorks API routing ────────────────────────────────────────────────────
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'scripts'))
-from lib.gooseworks import apify_config
-
-_apify_cfg = apify_config()
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 
 # ---------------------------------------------------------------------------
@@ -54,7 +52,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 
 HN_ALGOLIA_BASE = "https://hn.algolia.com/api/v1"
 PH_API_BASE = "https://api.producthunt.com/v2/api/graphql"
-APIFY_BASE = _apify_cfg["base_url"]
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
 APIFY_PH_ACTOR = "runtime~producthunt-scraper"
 
 APIFY_POLL_INTERVAL = 10
@@ -76,8 +74,8 @@ SIGNAL_TYPES = {
 
 
 def load_env_key(key_name):
-    if key_name == "APIFY_API_TOKEN" and _apify_cfg["token"]:
-        return _apify_cfg["token"]
+    if key_name == "APIFY_API_TOKEN" and GOOSEWORKS_API_KEY:
+        return GOOSEWORKS_API_KEY
     if load_dotenv:
         for env_path in [
             PROJECT_ROOT / ".env",
