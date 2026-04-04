@@ -25,7 +25,7 @@ except ImportError:
     print("Error: requests library required. Install with: pip install requests", file=sys.stderr)
     sys.exit(1)
 
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; SEOAnalyzerBot/1.0)"}
 
 # Apify actor IDs

@@ -63,7 +63,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 HN_ALGOLIA_BASE = "https://hn.algolia.com/api/v1"
 HN_RATE_DELAY = 0.1  # 10,000 req/hr = ~2.7/sec, 0.1s is safe
 
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 APIFY_ACTOR_ID = "oAuCIx3ItNrs2okjQ"  # trudax/reddit-scraper-lite
 APIFY_POLL_INTERVAL = 10  # seconds
 APIFY_MAX_WAIT = 1200  # 20 minutes

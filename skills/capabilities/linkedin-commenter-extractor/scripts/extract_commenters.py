@@ -26,7 +26,7 @@ except ImportError:
 GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 ACTOR_ID = "harvestapi~linkedin-post-comments"
 
 HEADERS = {

@@ -27,7 +27,7 @@ except ImportError:
 
 
 ACTOR_ID = "powerai~influencer-filter-api-scraper"
-BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 
 
 def get_token(cli_token=None):

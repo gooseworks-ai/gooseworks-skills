@@ -50,7 +50,7 @@ GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 # ── Constants ────────────────────────────────────────────────────
 
-CRUSTDATA_SEARCH_URL = f"{GOOSEWORKS_API_BASE}/proxy/crustdata/screener/person/search/"
+CRUSTDATA_SEARCH_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/crustdata/screener/person/search/"
 RESULTS_PER_PAGE = 25        # CrustData sync results per page
 MAX_PAGE = 100               # CrustData max page number
 RATE_LIMIT_DELAY = 4.0       # 15 req/min = 4s between requests

@@ -33,7 +33,7 @@ HEADERS = {
     "User-Agent": "ConferenceSpeakerScraper/1.0"
 }
 
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 
 # Speaker-related CSS class patterns
 SPEAKER_CLASS_PATTERNS = [

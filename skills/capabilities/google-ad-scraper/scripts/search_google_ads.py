@@ -22,7 +22,7 @@ GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.goosewo
 GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 ACTOR_ID = "xtech~google-ad-transparency-scraper"
-BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 
 # Google Ads Transparency Center base URL
 GADS_BASE = "https://adstransparency.google.com"

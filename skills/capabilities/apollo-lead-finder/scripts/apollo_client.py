@@ -26,7 +26,7 @@ import urllib.error
 GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
-BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apollo/v1"
+BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apollo"
 MAX_RETRIES = 3
 
 

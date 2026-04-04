@@ -29,7 +29,7 @@ except ImportError:
     sys.exit(1)
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ContentCatalogBot/1.0)"}
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 SITEMAP_ACTOR = "onescales~sitemap-url-extractor"
 
 # --- Content Type Classification ---

@@ -30,7 +30,7 @@ except ImportError:
 GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
-API_BASE = f"{GOOSEWORKS_API_BASE}/proxy/crustdata"
+API_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/crustdata"
 KEYWORD_SEARCH_ENDPOINT = "/screener/linkedin_posts/keyword_search"
 
 VALID_TIME_FRAMES = ["past-day", "past-week", "past-month", "past-quarter", "past-year", "all-time"]

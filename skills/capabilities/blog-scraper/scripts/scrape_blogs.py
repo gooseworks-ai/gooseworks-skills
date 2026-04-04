@@ -37,7 +37,7 @@ FEED_PATHS = [
 ]
 
 APIFY_ACTOR = "jupri~rss-xml-scraper"
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 
 
 def discover_feed_url(blog_url):

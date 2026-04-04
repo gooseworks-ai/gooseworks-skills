@@ -52,7 +52,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 
 HN_ALGOLIA_BASE = "https://hn.algolia.com/api/v1"
 PH_API_BASE = "https://api.producthunt.com/v2/api/graphql"
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 APIFY_PH_ACTOR = "runtime~producthunt-scraper"
 
 APIFY_POLL_INTERVAL = 10

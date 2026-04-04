@@ -130,7 +130,7 @@ def load_env():
 
 def apify_dataset(run_id, token, limit=50000):
     """Fetch dataset items from a completed run."""
-    url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{run_id}/dataset/items?token={token}&limit={limit}"
+    url = f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/actor-runs/{run_id}/dataset/items?token={token}&limit={limit}"
     return json.load(urllib.request.urlopen(url, timeout=120))
 
 

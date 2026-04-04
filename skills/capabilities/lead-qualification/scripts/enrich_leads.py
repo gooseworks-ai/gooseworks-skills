@@ -43,7 +43,7 @@ except ImportError:
 
 # --- Constants ---
 ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
-BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 COST_PER_1K = 3.00  # $3 per 1,000 profiles
 ACTOR_URL = "https://console.apify.com/actors/supreme_coder~linkedin-profile-scraper"
 

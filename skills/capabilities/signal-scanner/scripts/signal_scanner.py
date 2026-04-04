@@ -321,7 +321,7 @@ def scan_job_postings(sb, companies, config, client_name, run_id, apify_token):
         try:
             actor_run_id = guarded_apify_run(APIFY_ACTOR_JOB_SEARCH, payload, apify_token)
             # Fetch dataset from run
-            check_url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{actor_run_id}?token={apify_token}"
+            check_url = f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/actor-runs/{actor_run_id}?token={apify_token}"
             check = json.load(urllib.request.urlopen(check_url, timeout=30))
             dataset_id = check["data"]["defaultDatasetId"]
             jobs = fetch_dataset(dataset_id, apify_token)
@@ -403,7 +403,7 @@ def scan_linkedin_content(sb, people, config, client_name, run_id, apify_token):
 
         try:
             actor_run_id = guarded_apify_run(APIFY_ACTOR_PROFILE_POSTS, payload, apify_token)
-            check_url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{actor_run_id}?token={apify_token}"
+            check_url = f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/actor-runs/{actor_run_id}?token={apify_token}"
             check = json.load(urllib.request.urlopen(check_url, timeout=30))
             dataset_id = check["data"]["defaultDatasetId"]
             posts = fetch_dataset(dataset_id, apify_token)
@@ -556,7 +556,7 @@ def scan_profile_changes(sb, people, config, client_name, run_id, apify_token):
 
         try:
             actor_run_id = guarded_apify_run(APIFY_ACTOR_PROFILE_SCRAPER, payload, apify_token)
-            check_url = f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{actor_run_id}?token={apify_token}"
+            check_url = f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/actor-runs/{actor_run_id}?token={apify_token}"
             check = json.load(urllib.request.urlopen(check_url, timeout=30))
             dataset_id = check["data"]["defaultDatasetId"]
             profiles = fetch_dataset(dataset_id, apify_token)

@@ -149,7 +149,7 @@ class LumaApifyClient:
     """
 
     ACTOR_ID = "lexis-solutions~lu-ma-scraper"
-    BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+    BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 
     def __init__(self, api_token: Optional[str] = None):
         self.api_token = api_token or GOOSEWORKS_API_KEY

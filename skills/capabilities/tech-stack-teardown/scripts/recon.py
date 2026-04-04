@@ -313,7 +313,7 @@ def scan_apify_profiler(domains, token):
     try:
         import requests
         resp = requests.post(
-            f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/acts/justa~technology-profiling-engine/runs",
+            f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/acts/justa~technology-profiling-engine/runs",
             json=payload,
             params={"token": token, "waitForFinish": 300},
             timeout=330,
@@ -330,7 +330,7 @@ def scan_apify_profiler(domains, token):
             for _ in range(60):
                 time.sleep(5)
                 check = requests.get(
-                    f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/actor-runs/{run_id}",
+                    f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/actor-runs/{run_id}",
                     params={"token": token},
                 ).json()
                 status = check["data"]["status"]
@@ -343,7 +343,7 @@ def scan_apify_profiler(domains, token):
 
         dataset_id = run_data["defaultDatasetId"]
         ds_resp = requests.get(
-            f"{GOOSEWORKS_API_BASE + '/proxy/apify/v2'}/datasets/{dataset_id}/items",
+            f"{GOOSEWORKS_API_BASE + '/v1/proxy/apify'}/datasets/{dataset_id}/items",
             params={"token": token},
         )
         items = ds_resp.json()

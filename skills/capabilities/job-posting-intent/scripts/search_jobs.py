@@ -36,7 +36,7 @@ GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.goosewo
 GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 ACTOR_ID = "harvestapi~linkedin-job-search"
-BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 
 # Pricing constants
 COST_PER_JOB = 0.001      # $0.001 per job result

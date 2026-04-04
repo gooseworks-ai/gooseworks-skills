@@ -101,7 +101,7 @@ else:
         sys.exit(1)
 
     _ACTOR_ID = "supreme_coder~linkedin-profile-scraper"
-    _BASE_URL = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+    _BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
     _COST_PER_1K = 3.00
 
     def normalize_linkedin_url(url: str) -> str:

@@ -36,7 +36,7 @@ GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.goosewo
 GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
 
 APIFY_ACTOR_ID = "karamelo~youtube-transcripts"
-APIFY_API_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_API_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 CACHE_DIR = Path(os.environ.get("YT_TRANSCRIPT_CACHE_DIR", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".cache")))
 
 

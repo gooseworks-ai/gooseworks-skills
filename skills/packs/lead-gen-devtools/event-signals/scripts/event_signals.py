@@ -56,7 +56,7 @@ TMP_DIR = PROJECT_ROOT / ".tmp"
 SESSIONIZE_BASE = "https://sessionize.com/api/v2"
 CONFSTECH_BASE = "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences"
 LISTENNOTES_BASE = "https://listen-api.listennotes.com/api/v2"
-APIFY_BASE = f"{GOOSEWORKS_API_BASE}/proxy/apify/v2"
+APIFY_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
 APIFY_MEETUP_ACTOR = "qaDijpjO2HlVfLvoE"  # automation-lab/meetup-scraper
 APIFY_LUMA_ACTOR = "r5gMxLV2rOF3J1fxu"  # lexis-solutions/lu-ma-scraper
 
