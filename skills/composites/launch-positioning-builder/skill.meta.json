@@ -4,6 +4,9 @@
   "tags": [
     "brand"
   ],
+  "requires_skills": [
+    "review-scraper"
+  ],
   "installation": {
     "base_command": "npx goose-skills install launch-positioning-builder",
     "supports": [

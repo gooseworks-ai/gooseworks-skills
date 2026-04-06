@@ -9,7 +9,8 @@ Usage:
     python3 search_posts.py --keywords-file keywords.txt --time-frame past-week
 
 Environment:
-    CRUSTDATA_API_TOKEN  — Required. Your Crustdata API token.
+    GOOSEWORKS_API_KEY   — Required. GooseWorks API key (proxies to Crustdata).
+    CRUSTDATA_API_TOKEN  — Fallback if GOOSEWORKS_API_KEY is not set.
 """
 
 import argparse
@@ -18,38 +19,48 @@ import json
 import os
 import sys
 import time
+import urllib.request
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import urlencode
-
-try:
-    import requests
-except ImportError:
-    print("ERROR: 'requests' package required. Install with: pip3 install requests", file=sys.stderr)
-    sys.exit(1)
 
 GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://app.gooseworks.ai")
-GOOSEWORKS_API_KEY = os.environ["GOOSEWORKS_API_KEY"]
-
 API_BASE = f"{GOOSEWORKS_API_BASE}/v1/proxy/crustdata"
 KEYWORD_SEARCH_ENDPOINT = "/screener/linkedin_posts/keyword_search"
 
 VALID_TIME_FRAMES = ["past-day", "past-week", "past-month", "past-quarter", "past-year", "all-time"]
 VALID_SORT_BY = ["relevance", "date"]
+MAX_RETRIES = 3
 
 
-def get_token():
-    token = os.environ.get("CRUSTDATA_API_TOKEN", "") or os.environ.get("CRUSTDATA_API_KEY", "")
-    if not token and not bool(os.environ.get("GOOSEWORKS_API_KEY")):
-        print("ERROR: CRUSTDATA_API_TOKEN or CRUSTDATA_API_KEY environment variable not set.", file=sys.stderr)
-        sys.exit(1)
-    return token
+def get_auth_headers():
+    """Build auth headers using GooseWorks API key or direct Crustdata token."""
+    gw_key = os.environ.get("GOOSEWORKS_API_KEY", "")
+    if gw_key:
+        return {
+            "Authorization": f"Bearer {gw_key}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
+    cd_token = os.environ.get("CRUSTDATA_API_TOKEN", "") or os.environ.get("CRUSTDATA_API_KEY", "")
+    if cd_token:
+        return {
+            "Authorization": f"Token {cd_token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+
+    print("ERROR: Set GOOSEWORKS_API_KEY or CRUSTDATA_API_TOKEN.", file=sys.stderr)
+    sys.exit(1)
 
 
-def search_keyword(token, keyword, time_frame, sort_by, page, limit):
-    """Search LinkedIn posts for a single keyword on a single page via POST."""
+def search_keyword(headers, keyword, time_frame, sort_by, page, limit):
+    """Search LinkedIn posts for a single keyword on a single page via POST.
+
+    Returns:
+        (keyword, page, list_of_post_dicts)
+    """
     url = f"{API_BASE}{KEYWORD_SEARCH_ENDPOINT}"
-    headers = {"Authorization": f"Bearer {GOOSEWORKS_API_KEY}", "Content-Type": "application/json"}
-    headers["Accept"] = "application/json"
     payload = {
         "keyword": keyword,
         "page": page,
@@ -59,38 +70,61 @@ def search_keyword(token, keyword, time_frame, sort_by, page, limit):
     if limit:
         payload["limit"] = limit
 
-    try:
-        resp = requests.post(url, headers=headers, json=payload, timeout=90)
-        if resp.status_code == 401:
-            print(f"ERROR: Authentication failed. Check your CRUSTDATA_API_TOKEN/CRUSTDATA_API_KEY.", file=sys.stderr)
-            return keyword, page, []
-        if resp.status_code == 429:
-            print(f"WARN: Rate limited on keyword '{keyword}' page {page}. Waiting 5s...", file=sys.stderr)
-            time.sleep(5)
-            resp = requests.post(url, headers=headers, json=payload, timeout=90)
-        resp.raise_for_status()
-        data = resp.json()
+    body = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url, data=body, headers=headers, method="POST")
 
-        # Response is a list of post objects
-        if isinstance(data, list):
-            return keyword, page, data
-        elif "posts" in data:
-            return keyword, page, data["posts"]
-        elif "data" in data and "details" in data["data"]:
-            return keyword, page, data["data"]["details"]
-        else:
-            for key in data:
-                if isinstance(data[key], list) and len(data[key]) > 0:
-                    return keyword, page, data[key]
-            print(f"WARN: Unexpected response shape for '{keyword}' page {page}: {list(data.keys())}", file=sys.stderr)
+    for attempt in range(MAX_RETRIES):
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                posts = _extract_posts_from_response(data)
+                return keyword, page, posts
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode("utf-8") if e.fp else ""
+            if e.code == 401:
+                print(f"ERROR: Authentication failed (401). Check API credentials.", file=sys.stderr)
+                return keyword, page, []
+            if e.code == 429:
+                retry_after = 5
+                try:
+                    retry_after = json.loads(error_body).get("retry_after", 5)
+                except (json.JSONDecodeError, AttributeError):
+                    pass
+                print(f"WARN: Rate limited on '{keyword}' page {page}. Waiting {retry_after}s...", file=sys.stderr)
+                time.sleep(retry_after)
+                continue
+            if e.code >= 500 and attempt < MAX_RETRIES - 1:
+                wait = 4 * (2 ** attempt)
+                print(f"WARN: Server error ({e.code}) on '{keyword}' page {page}. Retrying in {wait}s...", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            print(f"ERROR: HTTP {e.code} for '{keyword}' page {page}: {error_body[:300]}", file=sys.stderr)
+            return keyword, page, []
+        except urllib.error.URLError as e:
+            if attempt < MAX_RETRIES - 1:
+                wait = 4 * (2 ** attempt)
+                print(f"WARN: Connection error on '{keyword}' page {page}: {e}. Retrying in {wait}s...", file=sys.stderr)
+                time.sleep(wait)
+                continue
+            print(f"ERROR: Connection failed for '{keyword}' page {page}: {e}", file=sys.stderr)
             return keyword, page, []
 
-    except requests.exceptions.HTTPError as e:
-        print(f"ERROR: HTTP {e.response.status_code} for keyword '{keyword}' page {page}: {e}", file=sys.stderr)
-        return keyword, page, []
-    except requests.exceptions.RequestException as e:
-        print(f"ERROR: Request failed for keyword '{keyword}' page {page}: {e}", file=sys.stderr)
-        return keyword, page, []
+    return keyword, page, []
+
+
+def _extract_posts_from_response(data):
+    """Handle various Crustdata response shapes."""
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        if "posts" in data:
+            return data["posts"]
+        if "data" in data and isinstance(data["data"], dict) and "details" in data["data"]:
+            return data["data"]["details"]
+        for key in data:
+            if isinstance(data[key], list) and data[key]:
+                return data[key]
+    return []
 
 
 def extract_post_row(post, keyword):
@@ -112,14 +146,9 @@ def extract_post_row(post, keyword):
 
 def run_search(keywords, time_frame, sort_by, pages, limit, max_workers):
     """Run parallel keyword searches across all keywords and pages."""
-    token = get_token()
+    headers = get_auth_headers()
 
-    # Build all (keyword, page) combinations
-    tasks = []
-    for kw in keywords:
-        for page in range(1, pages + 1):
-            tasks.append((kw, page))
-
+    tasks = [(kw, page) for kw in keywords for page in range(1, pages + 1)]
     all_posts = []
     seen_urns = set()
     total_api_calls = len(tasks)
@@ -129,12 +158,11 @@ def run_search(keywords, time_frame, sort_by, pages, limit, max_workers):
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {
-            executor.submit(search_keyword, token, kw, time_frame, sort_by, page, limit): (kw, page)
+            executor.submit(search_keyword, headers, kw, time_frame, sort_by, page, limit): (kw, page)
             for kw, page in tasks
         }
 
         for future in as_completed(futures):
-            kw, page = futures[future]
             keyword, pg, posts = future.result()
             completed += 1
 
@@ -147,13 +175,12 @@ def run_search(keywords, time_frame, sort_by, pages, limit, max_workers):
 
             print(f"  [{completed}/{total_api_calls}] '{keyword}' page {pg}: {len(posts)} posts ({len(seen_urns)} unique total)", file=sys.stderr)
 
-    # Sort by reactions descending
-    all_posts.sort(key=lambda x: x["reactions"], reverse=True)
+    # Sort by total engagement (reactions + comments + shares) descending
+    all_posts.sort(key=lambda x: x["reactions"] + x["comments"] + x["num_shares"], reverse=True)
     return all_posts
 
 
 def output_json(posts, output_file):
-    """Output posts as JSON."""
     data = json.dumps(posts, indent=2, ensure_ascii=False)
     if output_file:
         with open(output_file, "w") as f:
@@ -164,7 +191,6 @@ def output_json(posts, output_file):
 
 
 def output_csv(posts, output_file):
-    """Output posts as CSV."""
     fieldnames = ["author", "keyword", "reactions", "comments", "date", "post_preview", "url", "backend_urn", "num_shares"]
     f = open(output_file, "w", newline="") if output_file else sys.stdout
     writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
@@ -176,7 +202,6 @@ def output_csv(posts, output_file):
 
 
 def output_summary(posts):
-    """Print a summary table to stderr."""
     print(f"\n{'='*80}", file=sys.stderr)
     print(f"  RESULTS: {len(posts)} unique posts found", file=sys.stderr)
     print(f"{'='*80}\n", file=sys.stderr)
@@ -185,17 +210,15 @@ def output_summary(posts):
         print("  No posts found.", file=sys.stderr)
         return
 
-    # Top posts table
     top = posts[:20]
-    print(f"  {'Author':<25} {'Keyword':<25} {'React':>6} {'Cmts':>6} {'Date':<12} Preview", file=sys.stderr)
-    print(f"  {'-'*25} {'-'*25} {'-'*6} {'-'*6} {'-'*12} {'-'*40}", file=sys.stderr)
+    print(f"  {'Author':<25} {'Keyword':<25} {'React':>6} {'Cmts':>6} {'Shares':>6} {'Date':<12} Preview", file=sys.stderr)
+    print(f"  {'-'*25} {'-'*25} {'-'*6} {'-'*6} {'-'*6} {'-'*12} {'-'*40}", file=sys.stderr)
     for p in top:
         author = (p["author"] or "Unknown")[:24]
         keyword = (p["keyword"] or "")[:24]
         preview = (p["post_preview"] or "")[:40]
-        print(f"  {author:<25} {keyword:<25} {p['reactions']:>6} {p['comments']:>6} {p['date']:<12} {preview}", file=sys.stderr)
+        print(f"  {author:<25} {keyword:<25} {p['reactions']:>6} {p['comments']:>6} {p['num_shares']:>6} {p['date']:<12} {preview}", file=sys.stderr)
 
-    # Keyword breakdown
     keyword_counts = {}
     for p in posts:
         kw = p["keyword"]
@@ -219,7 +242,6 @@ def main():
 
     args = parser.parse_args()
 
-    # Collect keywords
     keywords = list(args.keyword)
     if args.keywords_file:
         with open(args.keywords_file) as f:
@@ -232,16 +254,13 @@ def main():
         print("ERROR: Provide at least one keyword via --keyword or --keywords-file", file=sys.stderr)
         sys.exit(1)
 
-    # Run search
     posts = run_search(keywords, args.time_frame, args.sort_by, args.pages, args.limit, args.max_workers)
 
-    # Output
     if args.output == "json":
         output_json(posts, args.output_file)
     elif args.output == "csv":
         output_csv(posts, args.output_file)
 
-    # Always print summary to stderr
     output_summary(posts)
 
 

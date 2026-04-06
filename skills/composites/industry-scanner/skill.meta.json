@@ -4,6 +4,20 @@
   "tags": [
     "competitive-intel"
   ],
+  "requires_skills": [
+    "agentmail",
+    "blog-scraper",
+    "company-contact-finder",
+    "conference-speaker-scraper",
+    "hacker-news-scraper",
+    "linkedin-post-research",
+    "luma-event-attendees",
+    "reddit-scraper",
+    "review-scraper",
+    "setup-outreach-campaign",
+    "twitter-scraper",
+    "web-archive-scraper"
+  ],
   "installation": {
     "base_command": "npx goose-skills install industry-scanner",
     "supports": [

@@ -9,7 +9,7 @@ Search LinkedIn for posts matching keywords via the Crustdata API, deduplicate r
 
 ## Quick Start
 
-Requires `requests` and `CRUSTDATA_API_TOKEN` environment variable.
+Requires `GOOSEWORKS_API_KEY` environment variable (or `CRUSTDATA_API_TOKEN` as fallback). No external dependencies — uses Python stdlib only.
 
 ```bash
 # Single keyword search
@@ -66,7 +66,7 @@ python3 skills/linkedin-post-research/scripts/search_posts.py \
 1. Takes keywords via CLI args or file
 2. Calls Crustdata's `/screener/linkedin_posts/keyword_search` API in parallel for all (keyword × page) combinations
 3. Deduplicates posts across keywords by `backend_urn`
-4. Sorts by `total_reactions` descending
+4. Sorts by total engagement (reactions + comments + shares) descending
 5. Outputs JSON, CSV, or summary
 
 ## Output Schema (JSON)
@@ -112,7 +112,7 @@ python3 skills/linkedin-post-research/scripts/search_posts.py \
 - `date_posted` — Time filter (past-day, past-week, etc.)
 - `limit` — Exact number of posts to return (1-100)
 
-**Auth:** `Authorization: Token <CRUSTDATA_API_TOKEN>`
+**Auth:** `Authorization: Bearer <GOOSEWORKS_API_KEY>` (via GooseWorks proxy) or `Authorization: Token <CRUSTDATA_API_TOKEN>` (direct)
 
 **Credit usage:** 1 credit per post returned.
 
@@ -122,7 +122,8 @@ python3 skills/linkedin-post-research/scripts/search_posts.py \
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `CRUSTDATA_API_TOKEN` | Yes | Crustdata API token |
+| `GOOSEWORKS_API_KEY` | Yes* | GooseWorks API key (proxies to Crustdata) |
+| `CRUSTDATA_API_TOKEN` | Fallback | Direct Crustdata API token (used if GOOSEWORKS_API_KEY is not set) |
 
 ## Cost
 

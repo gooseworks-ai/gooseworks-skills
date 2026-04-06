@@ -1,0 +1,28 @@
+{
+  "slug": "end-to-end-leadership-change-signal",
+  "category": "composites",
+  "tags": [
+    "lead-generation",
+    "outreach"
+  ],
+  "requires_skills": [
+    "leadership-change-outreach",
+    "company-contact-finder",
+    "contact-cache",
+    "cold-email-outreach",
+    "email-drafting",
+    "linkedin-outreach",
+    "linkedin-profile-post-scraper",
+    "hacker-news-scraper",
+    "reddit-scraper",
+    "twitter-scraper"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install end-to-end-leadership-change-signal",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}

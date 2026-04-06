@@ -1,6 +1,6 @@
 {
   "version": "1.2.0",
-  "generated": "2026-04-02",
+  "generated": "2026-04-06",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -18,6 +18,12 @@
         "category": "composites",
         "tags": [
           "ads"
+        ],
+        "requires_skills": [
+          "ad-creative-intelligence",
+          "reddit-scraper",
+          "review-scraper",
+          "twitter-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install ad-angle-miner",
@@ -73,6 +79,10 @@
         "tags": [
           "ads"
         ],
+        "requires_skills": [
+          "google-ad-scraper",
+          "meta-ad-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install ad-creative-intelligence",
           "supports": [
@@ -126,6 +136,10 @@
         "category": "composites",
         "tags": [
           "ads"
+        ],
+        "requires_skills": [
+          "google-ad-scraper",
+          "meta-ad-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install ad-to-landing-page-auditor",
@@ -266,6 +280,11 @@
         "tags": [
           "competitive-intel"
         ],
+        "requires_skills": [
+          "google-ad-scraper",
+          "meta-ad-scraper",
+          "review-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install battlecard-generator",
           "supports": [
@@ -401,6 +420,11 @@
         "category": "composites",
         "tags": [
           "outreach"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
         ],
         "installation": {
           "base_command": "npx goose-skills install champion-move-outreach",
@@ -649,6 +673,11 @@
         "tags": [
           "competitive-intel"
         ],
+        "requires_skills": [
+          "blog-scraper",
+          "linkedin-profile-post-scraper",
+          "review-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install company-current-gtm-analysis",
           "supports": [
@@ -703,6 +732,10 @@
         "tags": [
           "competitive-intel"
         ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting"
+        ],
         "installation": {
           "base_command": "npx goose-skills install competitive-strategy-tracker",
           "supports": [
@@ -730,6 +763,10 @@
         "tags": [
           "ads"
         ],
+        "requires_skills": [
+          "google-ad-scraper",
+          "meta-ad-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install competitor-ad-teardown",
           "supports": [
@@ -756,6 +793,11 @@
         "category": "composites",
         "tags": [
           "competitive-intel"
+        ],
+        "requires_skills": [
+          "blog-scraper",
+          "linkedin-profile-post-scraper",
+          "twitter-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install competitor-content-tracker",
@@ -949,6 +991,12 @@
         "category": "composites",
         "tags": [
           "content"
+        ],
+        "requires_skills": [
+          "reddit-scraper",
+          "review-scraper",
+          "seo-domain-analyzer",
+          "site-content-catalog"
         ],
         "installation": {
           "base_command": "npx goose-skills install content-brief-factory",
@@ -1186,6 +1234,11 @@
         "tags": [
           "outreach"
         ],
+        "requires_skills": [
+          "linkedin-profile-post-scraper",
+          "review-scraper",
+          "setup-outreach-campaign"
+        ],
         "installation": {
           "base_command": "npx goose-skills install customer-win-back-sequencer",
           "supports": [
@@ -1212,6 +1265,10 @@
         "category": "composites",
         "tags": [
           "outreach"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting"
         ],
         "installation": {
           "base_command": "npx goose-skills install disqualification-handling",
@@ -1279,6 +1336,164 @@
       }
     },
     {
+      "slug": "end-to-end-funding-signal",
+      "name": "end-to-end-funding-signal",
+      "category": "composites",
+      "description": ">",
+      "tags": "lead-generation, outreach",
+      "path": "skills/composites/end-to-end-funding-signal",
+      "files": [
+        "skills/composites/end-to-end-funding-signal/SKILL.md",
+        "skills/composites/end-to-end-funding-signal/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "end-to-end-funding-signal",
+        "category": "composites",
+        "tags": [
+          "lead-generation",
+          "outreach"
+        ],
+        "requires_skills": [
+          "funding-signal-monitor",
+          "funding-signal-outreach",
+          "company-contact-finder",
+          "contact-cache",
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "hacker-news-scraper",
+          "reddit-scraper",
+          "twitter-scraper"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install end-to-end-funding-signal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "end-to-end-hiring-signal",
+      "name": "end-to-end-hiring-signal",
+      "category": "composites",
+      "description": ">",
+      "tags": "lead-generation, outreach",
+      "path": "skills/composites/end-to-end-hiring-signal",
+      "files": [
+        "skills/composites/end-to-end-hiring-signal/SKILL.md",
+        "skills/composites/end-to-end-hiring-signal/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "end-to-end-hiring-signal",
+        "category": "composites",
+        "tags": [
+          "lead-generation",
+          "outreach"
+        ],
+        "requires_skills": [
+          "hiring-signal-outreach",
+          "company-contact-finder",
+          "contact-cache",
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "hacker-news-scraper",
+          "reddit-scraper",
+          "twitter-scraper"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install end-to-end-hiring-signal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "end-to-end-leadership-change-signal",
+      "name": "end-to-end-leadership-change-signal",
+      "category": "composites",
+      "description": ">",
+      "tags": "lead-generation, outreach",
+      "path": "skills/composites/end-to-end-leadership-change-signal",
+      "files": [
+        "skills/composites/end-to-end-leadership-change-signal/SKILL.md",
+        "skills/composites/end-to-end-leadership-change-signal/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "end-to-end-leadership-change-signal",
+        "category": "composites",
+        "tags": [
+          "lead-generation",
+          "outreach"
+        ],
+        "requires_skills": [
+          "leadership-change-outreach",
+          "company-contact-finder",
+          "contact-cache",
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "linkedin-profile-post-scraper",
+          "hacker-news-scraper",
+          "reddit-scraper",
+          "twitter-scraper"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install end-to-end-leadership-change-signal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "end-to-end-news-signal",
+      "name": "end-to-end-news-signal",
+      "category": "composites",
+      "description": ">",
+      "tags": "lead-generation, outreach",
+      "path": "skills/composites/end-to-end-news-signal",
+      "files": [
+        "skills/composites/end-to-end-news-signal/SKILL.md",
+        "skills/composites/end-to-end-news-signal/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "end-to-end-news-signal",
+        "category": "composites",
+        "tags": [
+          "lead-generation",
+          "outreach"
+        ],
+        "requires_skills": [
+          "news-signal-outreach",
+          "company-contact-finder",
+          "contact-cache",
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "hacker-news-scraper",
+          "reddit-scraper",
+          "twitter-scraper"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install end-to-end-news-signal",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "event-prospecting-pipeline",
       "name": "event-prospecting-pipeline",
       "category": "playbooks",
@@ -1321,6 +1536,10 @@
         "category": "composites",
         "tags": [
           "lead-generation"
+        ],
+        "requires_skills": [
+          "job-posting-intent",
+          "linkedin-profile-post-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install expansion-signal-spotter",
@@ -1404,6 +1623,14 @@
         "tags": [
           "lead-generation"
         ],
+        "requires_skills": [
+          "company-contact-finder",
+          "contact-cache",
+          "hacker-news-scraper",
+          "reddit-scraper",
+          "setup-outreach-campaign",
+          "twitter-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install funding-signal-monitor",
           "supports": [
@@ -1430,6 +1657,11 @@
         "category": "composites",
         "tags": [
           "outreach"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
         ],
         "installation": {
           "base_command": "npx goose-skills install funding-signal-outreach",
@@ -1486,6 +1718,10 @@
         "tags": [
           "lead-generation"
         ],
+        "requires_skills": [
+          "lead-qualification",
+          "luma-event-attendees"
+        ],
         "installation": {
           "base_command": "npx goose-skills install get-qualified-leads-from-luma",
           "supports": [
@@ -1541,38 +1777,11 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install google-search-ads-builder",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "gooseworks-master",
-      "name": "GooseWorks",
-      "category": "general",
-      "description": "GooseWorks data and lead generation toolkit. Use GooseWorks APIs for finding people, emails, companies, and scraping social media.",
-      "tags": "gooseworks,data,leads,scraping,email",
-      "path": "skills/gooseworks-master",
-      "files": [
-        "skills/gooseworks-master/SKILL.md"
-      ],
-      "metadata": {
-        "slug": "gooseworks-master",
-        "category": "general",
-        "tags": [
-          "gooseworks",
-          "data",
-          "leads",
-          "scraping",
-          "email"
+        "requires_skills": [
+          "seo-domain-analyzer"
         ],
         "installation": {
-          "base_command": "npx goose-skills install gooseworks-master",
+          "base_command": "npx goose-skills install google-search-ads-builder",
           "supports": [
             "claude",
             "cursor",
@@ -1652,6 +1861,11 @@
         "category": "composites",
         "tags": [
           "outreach"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
         ],
         "installation": {
           "base_command": "npx goose-skills install hiring-signal-outreach",
@@ -1734,6 +1948,11 @@
         "tags": [
           "research"
         ],
+        "requires_skills": [
+          "content-asset-creator",
+          "icp-persona-builder",
+          "icp-website-review"
+        ],
         "installation": {
           "base_command": "npx goose-skills install icp-website-audit",
           "supports": [
@@ -1788,6 +2007,9 @@
         "tags": [
           "lead-generation"
         ],
+        "requires_skills": [
+          "company-contact-finder"
+        ],
         "installation": {
           "base_command": "npx goose-skills install inbound-lead-enrichment",
           "supports": [
@@ -1815,6 +2037,9 @@
         "tags": [
           "lead-generation"
         ],
+        "requires_skills": [
+          "lead-qualification"
+        ],
         "installation": {
           "base_command": "npx goose-skills install inbound-lead-qualification",
           "supports": [
@@ -1841,6 +2066,11 @@
         "category": "composites",
         "tags": [
           "lead-generation"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "lead-qualification"
         ],
         "installation": {
           "base_command": "npx goose-skills install inbound-lead-triage",
@@ -1870,6 +2100,20 @@
         "category": "composites",
         "tags": [
           "competitive-intel"
+        ],
+        "requires_skills": [
+          "agentmail",
+          "blog-scraper",
+          "company-contact-finder",
+          "conference-speaker-scraper",
+          "hacker-news-scraper",
+          "linkedin-post-research",
+          "luma-event-attendees",
+          "reddit-scraper",
+          "review-scraper",
+          "setup-outreach-campaign",
+          "twitter-scraper",
+          "web-archive-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install industry-scanner",
@@ -1928,6 +2172,11 @@
         "category": "composites",
         "tags": [
           "monitoring"
+        ],
+        "requires_skills": [
+          "kol-discovery",
+          "linkedin-profile-post-scraper",
+          "twitter-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install kol-content-monitor",
@@ -2024,6 +2273,35 @@
       }
     },
     {
+      "slug": "landing-page-intel-extractor",
+      "name": "landing-page-intel-extractor",
+      "category": "composites",
+      "description": ">",
+      "tags": "competitive-intel, research",
+      "path": "skills/composites/landing-page-intel-extractor",
+      "files": [
+        "skills/composites/landing-page-intel-extractor/SKILL.md",
+        "skills/composites/landing-page-intel-extractor/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "landing-page-intel-extractor",
+        "category": "composites",
+        "tags": [
+          "competitive-intel",
+          "research"
+        ],
+        "requires_skills": [],
+        "installation": {
+          "base_command": "npx goose-skills install landing-page-intel-extractor",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "launch-positioning-builder",
       "name": "launch-positioning-builder",
       "category": "composites",
@@ -2039,6 +2317,9 @@
         "category": "composites",
         "tags": [
           "brand"
+        ],
+        "requires_skills": [
+          "review-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install launch-positioning-builder",
@@ -2096,6 +2377,12 @@
         "category": "composites",
         "tags": [
           "outreach"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "linkedin-profile-post-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install leadership-change-outreach",
@@ -2226,6 +2513,39 @@
       }
     },
     {
+      "slug": "linkedin-outreach-campaign",
+      "name": "linkedin-outreach-campaign",
+      "category": "composites",
+      "description": ">",
+      "tags": "outreach",
+      "path": "skills/composites/linkedin-outreach-campaign",
+      "files": [
+        "skills/composites/linkedin-outreach-campaign/SKILL.md",
+        "skills/composites/linkedin-outreach-campaign/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "linkedin-outreach-campaign",
+        "category": "composites",
+        "tags": [
+          "outreach"
+        ],
+        "requires_skills": [
+          "linkedin-outreach",
+          "linkedin-post-research",
+          "linkedin-commenter-extractor",
+          "linkedin-profile-post-scraper"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install linkedin-outreach-campaign",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "linkedin-post-research",
       "name": "linkedin-post-research",
       "category": "capabilities",
@@ -2338,6 +2658,9 @@
         "tags": [
           "research"
         ],
+        "requires_skills": [
+          "gcalcli-calendar"
+        ],
         "installation": {
           "base_command": "npx goose-skills install meeting-brief",
           "supports": [
@@ -2420,6 +2743,9 @@
         "tags": [
           "ads"
         ],
+        "requires_skills": [
+          "meta-ad-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install meta-ads-campaign-builder",
           "supports": [
@@ -2446,6 +2772,11 @@
         "category": "composites",
         "tags": [
           "outreach"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach"
         ],
         "installation": {
           "base_command": "npx goose-skills install news-signal-outreach",
@@ -2476,6 +2807,9 @@
         "tags": [
           "monitoring"
         ],
+        "requires_skills": [
+          "company-contact-finder"
+        ],
         "installation": {
           "base_command": "npx goose-skills install newsletter-monitor",
           "supports": [
@@ -2502,6 +2836,9 @@
         "category": "composites",
         "tags": [
           "monitoring"
+        ],
+        "requires_skills": [
+          "agentmail"
         ],
         "installation": {
           "base_command": "npx goose-skills install newsletter-signal-scanner",
@@ -2533,6 +2870,36 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install newsletter-sponsorship-finder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "outbound-lead-qualification",
+      "name": "outbound-lead-qualification",
+      "category": "composites",
+      "description": ">",
+      "tags": "lead-generation",
+      "path": "skills/composites/outbound-lead-qualification",
+      "files": [
+        "skills/composites/outbound-lead-qualification/SKILL.md",
+        "skills/composites/outbound-lead-qualification/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "outbound-lead-qualification",
+        "category": "composites",
+        "tags": [
+          "lead-generation"
+        ],
+        "requires_skills": [
+          "lead-qualification"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install outbound-lead-qualification",
           "supports": [
             "claude",
             "cursor",
@@ -2585,6 +2952,10 @@
         "tags": [
           "ads"
         ],
+        "requires_skills": [
+          "google-ad-scraper",
+          "meta-ad-scraper"
+        ],
         "installation": {
           "base_command": "npx goose-skills install paid-channel-prioritizer",
           "supports": [
@@ -2633,6 +3004,36 @@
       }
     },
     {
+      "slug": "periodic-sales-performance-review",
+      "name": "periodic-sales-performance-review",
+      "category": "composites",
+      "description": ">",
+      "tags": "research",
+      "path": "skills/composites/periodic-sales-performance-review",
+      "files": [
+        "skills/composites/periodic-sales-performance-review/SKILL.md",
+        "skills/composites/periodic-sales-performance-review/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "periodic-sales-performance-review",
+        "category": "composites",
+        "tags": [
+          "research"
+        ],
+        "requires_skills": [
+          "cold-email-outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install periodic-sales-performance-review",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "pipeline-review",
       "name": "pipeline-review",
       "category": "composites",
@@ -2648,6 +3049,9 @@
         "category": "composites",
         "tags": [
           "research"
+        ],
+        "requires_skills": [
+          "cold-email-outreach"
         ],
         "installation": {
           "base_command": "npx goose-skills install pipeline-review",
@@ -2704,6 +3108,11 @@
         "tags": [
           "seo"
         ],
+        "requires_skills": [
+          "reddit-scraper",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ],
         "installation": {
           "base_command": "npx goose-skills install programmatic-seo-planner",
           "supports": [
@@ -2731,6 +3140,10 @@
         "tags": [
           "seo"
         ],
+        "requires_skills": [
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ],
         "installation": {
           "base_command": "npx goose-skills install programmatic-seo-spy",
           "supports": [
@@ -2757,6 +3170,10 @@
         "category": "composites",
         "tags": [
           "content"
+        ],
+        "requires_skills": [
+          "create-html-slides",
+          "visual-brand-extractor"
         ],
         "installation": {
           "base_command": "npx goose-skills install qbr-deck-builder",
@@ -2813,6 +3230,9 @@
         "category": "composites",
         "tags": [
           "research"
+        ],
+        "requires_skills": [
+          "review-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install review-intelligence-digest",
@@ -2896,6 +3316,9 @@
         "tags": [
           "research"
         ],
+        "requires_skills": [
+          "email-drafting"
+        ],
         "installation": {
           "base_command": "npx goose-skills install sales-coaching",
           "supports": [
@@ -2950,6 +3373,13 @@
         "tags": [
           "seo"
         ],
+        "requires_skills": [
+          "hacker-news-scraper",
+          "reddit-scraper",
+          "review-scraper",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ],
         "installation": {
           "base_command": "npx goose-skills install search-ad-keyword-architect",
           "supports": [
@@ -2976,6 +3406,11 @@
         "category": "composites",
         "tags": [
           "seo"
+        ],
+        "requires_skills": [
+          "brand-voice-extractor",
+          "seo-domain-analyzer",
+          "site-content-catalog"
         ],
         "installation": {
           "base_command": "npx goose-skills install seo-content-audit",
@@ -3060,6 +3495,11 @@
         "tags": [
           "seo"
         ],
+        "requires_skills": [
+          "seo-domain-analyzer",
+          "seo-traffic-analyzer",
+          "site-content-catalog"
+        ],
         "installation": {
           "base_command": "npx goose-skills install seo-opportunity-finder",
           "supports": [
@@ -3115,6 +3555,10 @@
         "tags": [
           "research"
         ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting"
+        ],
         "installation": {
           "base_command": "npx goose-skills install sequence-performance",
           "supports": [
@@ -3142,6 +3586,9 @@
         "tags": [
           "seo"
         ],
+        "requires_skills": [
+          "seo-domain-analyzer"
+        ],
         "installation": {
           "base_command": "npx goose-skills install serp-feature-sniper",
           "supports": [
@@ -3168,6 +3615,41 @@
         "category": "capabilities",
         "tags": [
           "outreach"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install setup-outreach-campaign",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "setup-outreach-campaign",
+      "name": "setup-outreach-campaign",
+      "category": "composites",
+      "description": ">",
+      "tags": "outreach, lead-generation",
+      "path": "skills/composites/setup-outreach-campaign",
+      "files": [
+        "skills/composites/setup-outreach-campaign/SKILL.md",
+        "skills/composites/setup-outreach-campaign/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "setup-outreach-campaign",
+        "category": "composites",
+        "tags": [
+          "outreach",
+          "lead-generation"
+        ],
+        "requires_skills": [
+          "cold-email-outreach",
+          "email-drafting",
+          "linkedin-outreach",
+          "company-contact-finder",
+          "contact-cache"
         ],
         "installation": {
           "base_command": "npx goose-skills install setup-outreach-campaign",
@@ -3326,6 +3808,40 @@
       }
     },
     {
+      "slug": "tam-builder-composite",
+      "name": "tam-builder",
+      "category": "composites",
+      "description": ">",
+      "tags": "lead-generation,research",
+      "path": "skills/composites/tam-builder",
+      "files": [
+        "skills/composites/tam-builder/SKILL.md",
+        "skills/composites/tam-builder/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "tam-builder",
+        "category": "composites",
+        "tags": [
+          "lead-generation",
+          "research"
+        ],
+        "requires_skills": [
+          "icp-identification",
+          "tam-builder",
+          "landing-page-intel",
+          "company-contact-finder"
+        ],
+        "installation": {
+          "base_command": "npx goose-skills install tam-builder",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "tech-stack-teardown",
       "name": "tech-stack-teardown",
       "category": "capabilities",
@@ -3370,6 +3886,11 @@
         "tags": [
           "seo"
         ],
+        "requires_skills": [
+          "reddit-scraper",
+          "seo-domain-analyzer",
+          "site-content-catalog"
+        ],
         "installation": {
           "base_command": "npx goose-skills install topical-authority-mapper",
           "supports": [
@@ -3396,6 +3917,12 @@
         "category": "composites",
         "tags": [
           "ads"
+        ],
+        "requires_skills": [
+          "hacker-news-scraper",
+          "linkedin-profile-post-scraper",
+          "reddit-scraper",
+          "twitter-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install trending-ad-hook-spotter",
@@ -3478,6 +4005,11 @@
         "category": "composites",
         "tags": [
           "research"
+        ],
+        "requires_skills": [
+          "reddit-scraper",
+          "review-scraper",
+          "twitter-scraper"
         ],
         "installation": {
           "base_command": "npx goose-skills install voice-of-customer-synthesizer",
@@ -3628,7 +4160,7 @@
         {
           "slug": "community-signals",
           "name": "community-signals",
-          "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals \u2014 alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
+          "description": "Extract leads from developer forums (Hacker News, Reddit) by detecting intent signals — alternative seeking, competitor pain, scaling challenges, DIY solutions, and migration intent. Scores users by intent strength and cross-platform presence.",
           "path": "skills/packs/lead-gen-devtools/community-signals",
           "files": [
             "skills/packs/lead-gen-devtools/community-signals/SKILL.md",
@@ -3639,7 +4171,7 @@
         {
           "slug": "competitor-signals",
           "name": "competitor-signals",
-          "description": "Extract leads from competitor product activity \u2014 Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
+          "description": "Extract leads from competitor product activity — Product Hunt commenters/upvoters, HN posts about competitors, case studies, testimonials, tech press, and switching signals. Detects people actively switching from competitors as highest-priority leads.",
           "path": "skills/packs/lead-gen-devtools/competitor-signals",
           "files": [
             "skills/packs/lead-gen-devtools/competitor-signals/SKILL.md",

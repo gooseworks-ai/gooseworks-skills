@@ -405,6 +405,151 @@ def extract_title_from_url(url):
     return title.title() if title else path
 
 
+# --- Deep Analysis ---
+
+CTA_PATTERNS = re.compile(
+    r"(sign\s*up|get\s*started|start\s*(free|your)|book\s*a?\s*demo|request\s*a?\s*demo|"
+    r"schedule\s*a?\s*(call|meeting|demo)|try\s*(it\s*)?free|contact\s*(us|sales)|"
+    r"learn\s*more|download\s*(now|free|the)|subscribe|join\s*(now|us|the|free)|"
+    r"buy\s*now|add\s*to\s*cart|claim\s*your|register\s*(now|free|today))",
+    re.IGNORECASE,
+)
+
+FUNNEL_SIGNALS = {
+    "TOFU": [
+        "what is", "how to", "guide", "introduction", "101", "beginner",
+        "tips", "best practices", "trends", "why", "explained", "overview",
+    ],
+    "MOFU": [
+        "vs", "compare", "comparison", "alternative", "review", "case study",
+        "template", "framework", "checklist", "example", "benchmark",
+    ],
+    "BOFU": [
+        "pricing", "demo", "trial", "buy", "implementation", "onboarding",
+        "migration", "integration", "roi", "cost", "plan",
+    ],
+}
+
+
+def infer_funnel_stage(url, title):
+    """Infer TOFU/MOFU/BOFU from URL and title signals."""
+    text = f"{url} {title}".lower()
+    scores = {"TOFU": 0, "MOFU": 0, "BOFU": 0}
+    for stage, keywords in FUNNEL_SIGNALS.items():
+        for kw in keywords:
+            if kw in text:
+                scores[stage] += 1
+    best = max(scores, key=scores.get)
+    return best if scores[best] > 0 else "TOFU"
+
+
+def deep_analyze_page(url):
+    """Fetch a single page and extract content metrics."""
+    analysis = {
+        "word_count": 0,
+        "target_keyword": "",
+        "funnel_stage": "TOFU",
+        "content_depth": "shallow",
+        "has_images": False,
+        "has_video": False,
+        "has_cta": False,
+        "internal_links_count": 0,
+    }
+
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        if resp.status_code != 200:
+            return analysis
+        html = resp.text
+    except Exception as e:
+        print(f"  [WARN] Failed to fetch {url}: {e}", file=sys.stderr)
+        return analysis
+
+    domain = urlparse(url).netloc
+
+    # Strip script/style tags then extract visible text
+    clean = re.sub(r"<(script|style|noscript)[^>]*>.*?</\1>", "", html, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", " ", clean)
+    text = re.sub(r"\s+", " ", text).strip()
+    words = text.split()
+    analysis["word_count"] = len(words)
+
+    # Content depth
+    wc = analysis["word_count"]
+    if wc >= 1500:
+        analysis["content_depth"] = "deep"
+    elif wc >= 500:
+        analysis["content_depth"] = "medium"
+    else:
+        analysis["content_depth"] = "shallow"
+
+    # Extract title from <title> or <h1>
+    title_match = re.search(r"<title[^>]*>([^<]+)</title>", html, re.IGNORECASE)
+    h1_match = re.search(r"<h1[^>]*>([^<]+)</h1>", html, re.IGNORECASE)
+    page_title = ""
+    if h1_match:
+        page_title = h1_match.group(1).strip()
+    elif title_match:
+        page_title = title_match.group(1).strip()
+
+    # Target keyword: infer from URL slug + title overlap
+    slug = urlparse(url).path.strip("/").split("/")[-1] if urlparse(url).path.strip("/") else ""
+    slug_words = set(re.split(r"[-_]", slug.lower()))
+    slug_words = {w for w in slug_words if len(w) > 2 and not w.isdigit()}
+    if slug_words:
+        analysis["target_keyword"] = " ".join(sorted(slug_words)[:4])
+
+    # Funnel stage
+    analysis["funnel_stage"] = infer_funnel_stage(url, page_title)
+
+    # Images
+    analysis["has_images"] = bool(re.search(r"<img\s", html, re.IGNORECASE))
+
+    # Video
+    analysis["has_video"] = bool(
+        re.search(r"<(video|iframe)[^>]*(youtube|vimeo|wistia|loom|vidyard|embed)", html, re.IGNORECASE)
+        or re.search(r"<video\s", html, re.IGNORECASE)
+    )
+
+    # CTA detection
+    analysis["has_cta"] = bool(CTA_PATTERNS.search(html))
+
+    # Internal links
+    all_links = re.findall(r'href=["\']([^"\'#]+)["\']', html)
+    internal = 0
+    for link in all_links:
+        if link.startswith("/") and not link.startswith("//"):
+            internal += 1
+        elif domain in link:
+            internal += 1
+    analysis["internal_links_count"] = internal
+
+    return analysis
+
+
+def run_deep_analysis(pages, n):
+    """Deep-analyze the top N pages, prioritizing blog posts."""
+    # Prioritize blog posts, then by date
+    candidates = sorted(
+        pages,
+        key=lambda p: (
+            0 if p["type"] == "blog-post" else 1,
+            p.get("date", "") or "0000",
+        ),
+    )
+    targets = candidates[:n]
+
+    print(f"  Deep-analyzing {len(targets)} pages...", file=sys.stderr)
+    for i, page in enumerate(targets, 1):
+        print(f"  [{i}/{len(targets)}] {page['url'][:80]}", file=sys.stderr)
+        page["deep_analysis"] = deep_analyze_page(page["url"])
+        # Be polite to servers
+        if i < len(targets):
+            time_mod.sleep(0.5)
+
+    return pages
+
+
 # --- Main Logic ---
 
 def catalog_domain(domain, deep_analyze=0, include_non_blog=True, apify_token=None):
@@ -505,8 +650,13 @@ def catalog_domain(domain, deep_analyze=0, include_non_blog=True, apify_token=No
         page.pop("_keywords", None)
         page.pop("source", None)
 
-    # Phase 4: Analyze publishing patterns
-    print("--- Phase 4: Publishing Patterns ---", file=sys.stderr)
+    # Phase 4: Deep Analysis (optional)
+    if deep_analyze > 0:
+        print("\n--- Phase 4: Deep Analysis ---", file=sys.stderr)
+        pages = run_deep_analysis(pages, deep_analyze)
+
+    # Phase 5: Analyze publishing patterns
+    print("--- Phase 5: Publishing Patterns ---", file=sys.stderr)
     summary = build_summary(pages)
 
     # Sort pages: blog posts by date (newest first), then others by type
@@ -628,6 +778,25 @@ def format_markdown(result):
     lines.append(f"- **Most recent:** {cad['most_recent']}")
     lines.append(f"- **Unique authors:** {summary['unique_authors']}")
     lines.append("")
+
+    # Deep analysis summary (if any pages were deep-analyzed)
+    analyzed = [p for p in result["pages"] if "deep_analysis" in p]
+    if analyzed:
+        lines.append("## Deep Analysis Summary")
+        lines.append(f"**Pages analyzed:** {len(analyzed)}")
+        lines.append("")
+        lines.append("| # | Title | Words | Depth | Funnel | CTA | Images | Video | Internal Links |")
+        lines.append("|---|-------|-------|-------|--------|-----|--------|-------|----------------|")
+        for i, p in enumerate(analyzed, 1):
+            da = p["deep_analysis"]
+            title = (p.get("title") or "")[:40]
+            lines.append(
+                f"| {i} | {title} | {da['word_count']} | {da['content_depth']} | "
+                f"{da['funnel_stage']} | {'Yes' if da['has_cta'] else 'No'} | "
+                f"{'Yes' if da['has_images'] else 'No'} | "
+                f"{'Yes' if da['has_video'] else 'No'} | {da['internal_links_count']} |"
+            )
+        lines.append("")
 
     # Full catalog table
     lines.append("## Full Catalog")
