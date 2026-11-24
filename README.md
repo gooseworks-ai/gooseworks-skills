@@ -49,9 +49,9 @@ Notes:
 - Only one target flag is allowed per command.
 - `--cursor` requires `--project-dir`.
 
-## Available Skills (125)
+## Available Skills (126)
 
-**55 Capabilities** (atomic, single-purpose tools) | **61 Composites** (multi-skill chains) | **9 Playbooks** (end-to-end workflows)
+**56 Capabilities** (atomic, single-purpose tools) | **61 Composites** (multi-skill chains) | **9 Playbooks** (end-to-end workflows)
 
 ### Ads (12)
 | Skill | Type | Description |
@@ -179,7 +179,7 @@ Notes:
 | `outbound-prospecting-engine` | Play | End-to-end outbound prospecting engine |
 | `setup-outreach-campaign` | Cap | Set up outbound email campaign in Smartlead |
 
-### Research (17)
+### Research (18)
 | Skill | Type | Description |
 |-------|------|-------------|
 | `brainstorming-partner` | Cap | Structured brainstorming frameworks |
@@ -197,6 +197,7 @@ Notes:
 | `sales-coaching` | Comp | AI sales coach analyzing all sales data |
 | `sales-performance-review` | Comp | Periodic sales performance review |
 | `sequence-performance` | Comp | Email campaign/sequence performance review |
+| `signalshelf-social-data` | Cap | Instagram, TikTok, YouTube, X, Reddit, Maps and ad-library data via SignalShelf API |
 | `voice-of-customer-synthesizer` | Comp | Aggregate customer feedback into unified VoC report |
 | `youtube-apify-transcript` | Cap | YouTube transcript extraction via Apify API |
 
